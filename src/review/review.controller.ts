@@ -5,7 +5,6 @@ import {
   Get,
   HttpException,
   HttpStatus,
-  Inject,
   Param,
   Post,
 } from '@nestjs/common';

@@ -1,10 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BasicModel } from 'src/common/basic.model';
 import { Document, Types } from 'mongoose';
 
 export type ReviewDocument = ReviewModel & Document;
-@Schema()
-export class ReviewModel extends BasicModel {
+@Schema({ timestamps: true, _id: true })
+export class ReviewModel {
   @Prop()
   name: string;
 

@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BasicModel } from 'src/common/basic.model';
 import { Document } from 'mongoose';
 
 export type ProductDocument = ProductModel & Document;
@@ -12,8 +11,8 @@ class ProductCharacteristic {
   value: string;
 }
 
-@Schema()
-export class ProductModel extends BasicModel {
+@Schema({ timestamps: true, _id: true })
+export class ProductModel {
   @Prop()
   image: string;
 

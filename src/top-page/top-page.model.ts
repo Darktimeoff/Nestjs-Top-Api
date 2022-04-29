@@ -1,5 +1,4 @@
-import { Prop, Schema, PropOptions, SchemaFactory } from '@nestjs/mongoose';
-import { BasicModel } from 'src/common/basic.model';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type TopPageDocument = TopPageModel & Document;
@@ -33,8 +32,8 @@ export class Advantage {
   description: string;
 }
 
-@Schema()
-export class TopPageModel extends BasicModel {
+@Schema({ timestamps: true, _id: true })
+export class TopPageModel {
   @Prop({
     enum: TopLevelCategory,
   })
