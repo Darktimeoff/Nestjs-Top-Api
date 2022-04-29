@@ -46,7 +46,7 @@ describe('ReviewController (e2e)', () => {
     );
 
     expect(statusCode).toBe(HttpStatus.OK);
-    expect(body).toBeTruthy();
+    expect(body.length).toBe(1);
   });
 
   it('/review/product/:id/ (GET) with unexting id', async () => {
@@ -57,7 +57,7 @@ describe('ReviewController (e2e)', () => {
     );
 
     expect(statusCode).toBe(HttpStatus.OK);
-    expect(body).toEqual([]);
+    expect(body.length).toEqual(0);
   });
 
   it('/review/delete/ (DELETE)', async () => {
