@@ -19,8 +19,6 @@ const createDTO: CreateReviewDto = {
 describe('ReviewController (e2e)', () => {
   let app: INestApplication;
   let createdId: string;
-  // tslint:disable-next-line: no-shadowed-variable
-  let productId: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -37,7 +35,6 @@ describe('ReviewController (e2e)', () => {
       .send(createDTO);
 
     createdId = body._id;
-    productId = body.productId;
 
     expect(statusCode).toBe(201);
     expect(createdId).toBeDefined();
