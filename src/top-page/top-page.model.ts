@@ -1,5 +1,8 @@
-import { Prop, Schema, PropOptions } from '@nestjs/mongoose';
+import { Prop, Schema, PropOptions, SchemaFactory } from '@nestjs/mongoose';
 import { BasicModel } from 'src/common/basic.model';
+import { Document } from 'mongoose';
+
+export type TopPageDocument = TopPageModel & Document;
 
 export enum TopLevelCategory {
   Courses,
@@ -64,3 +67,5 @@ export class TopPageModel extends BasicModel {
   @Prop()
   tagsTitle: string;
 }
+
+export const TopPageSchema = SchemaFactory.createForClass(TopPageModel);

@@ -1,6 +1,8 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BasicModel } from 'src/common/basic.model';
+import { Document } from 'mongoose';
 
+export type ReviewDocument = ReviewModel & Document;
 @Schema()
 export class ReviewModel extends BasicModel {
   @Prop()
@@ -14,7 +16,6 @@ export class ReviewModel extends BasicModel {
 
   @Prop()
   rating: number;
-
-  @Prop()
-  createdAt: Date;
 }
+
+export const ReviewSchema = SchemaFactory.createForClass(ReviewModel);

@@ -1,5 +1,8 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BasicModel } from 'src/common/basic.model';
+import { Document } from 'mongoose';
+
+export type ProductDocument = ProductModel & Document;
 
 class ProductCharacteristic {
   @Prop()
@@ -44,6 +47,8 @@ export class ProductModel extends BasicModel {
   @Prop([String])
   tags: string[];
 
-  @Prop({ type: [ProductCharacteristic], _id: false })
+  @Prop({ type: () => [ProductCharacteristic], _id: false })
   characteristics: ProductCharacteristic[];
 }
+
+export const ProductSchema = SchemaFactory.createForClass(ProductModel);
