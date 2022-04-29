@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { CreateReviewDto } from './../src/review/dto/create-review.dto';
-import { Types } from 'mongoose';
+import { Types, disconnect } from 'mongoose';
 import { AppModule } from './../src/app.module';
 
 const productId = new Types.ObjectId().toHexString();
@@ -42,6 +42,7 @@ describe('ReviewController (e2e)', () => {
   });
 
   afterAll(() => {
+    disconnect();
     app.close();
   });
 });
