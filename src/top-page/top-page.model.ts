@@ -1,3 +1,6 @@
+import { Prop, Schema, PropOptions } from '@nestjs/mongoose';
+import { BasicModel } from 'src/common/basic.model';
+
 export enum TopLevelCategory {
   Courses,
   Services,
@@ -5,22 +8,59 @@ export enum TopLevelCategory {
   Products,
 }
 
-export class TopPageModel {
-  _id: string;
+export class HH {
+  @Prop()
+  count: number;
+
+  @Prop()
+  juniorSalary: number;
+
+  @Prop()
+  middleSalary: number;
+
+  @Prop()
+  seniorSalary: number;
+}
+
+export class Advantage {
+  @Prop()
+  title: string;
+
+  @Prop()
+  description: string;
+}
+
+@Schema()
+export class TopPageModel extends BasicModel {
+  @Prop({
+    enum: TopLevelCategory,
+  })
   firstLevelCategory: TopLevelCategory;
+
+  @Prop()
   secondCategory: string;
+
+  @Prop({ unique: true })
+  alias: string;
+
+  @Prop()
+  title: string;
+
+  @Prop()
   category: string;
-  hh?: {
-    count: number;
-    juniorSalary: number;
-    middleSalary: number;
-    seniorSalary: number;
-  };
-  advantages: {
-    title: string;
-    description: string;
-  }[];
+
+  @Prop()
+  hh?: HH;
+
+  @Prop([Advantage])
+  advantages: Advantage[];
+
+  @Prop()
   seoText: string;
+
+  @Prop([String])
   tags: string[];
+
+  @Prop()
   tagsTitle: string;
 }
