@@ -10,9 +10,9 @@ export class CreateReviewDto {
   @IsString()
   title: string;
 
+  @Min(1, { message: 'Рейтинг не может быть менее 1' })
+  @Max(5, { message: 'Рейтинг не может быть более 5' })
   @IsNumber()
-  @Min(1)
-  @Max(5)
   rating: number;
 
   @IsString()
