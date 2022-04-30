@@ -5,6 +5,8 @@ import { CreateReviewDto } from './../src/review/dto/create-review.dto';
 import { Types, disconnect } from 'mongoose';
 import { AppModule } from './../src/app.module';
 import { REVIEW_NOT_FOUND } from './../src/review/review.constants';
+import { AuthDto } from './../src/auth/dto/auth.dto';
+import { AuthService } from './../src/auth/auth.service';
 
 const productId = new Types.ObjectId().toHexString();
 
@@ -16,17 +18,32 @@ const createDTO: CreateReviewDto = {
   productId,
 };
 
+const authDto: AuthDto = {
+  login: 'test555@gmail.com',
+  password: 'test55',
+};
+
 describe('ReviewController (e2e)', () => {
   let app: INestApplication;
   let createdId: string;
+  let token: string;
+  let authService: AuthService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
+    authService = moduleFixture.get<AuthService>(AuthService);
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    await request(app.getHttpServer()).post('/auth/register/').send(authDto);
+    const { body } = await request(app.getHttpServer())
+      .post('/auth/login/')
+      .send(authDto);
+
+    token = body.token;
   });
 
   it('/review/create/ (POST)', async () => {
@@ -70,18 +87,18 @@ describe('ReviewController (e2e)', () => {
   });
 
   it('/review/delete/ (DELETE)', async () => {
-    const { statusCode } = await request(app.getHttpServer()).delete(
-      `/review/${createdId}/`,
-    );
+    const { statusCode } = await request(app.getHttpServer())
+      .delete(`/review/${createdId}/`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(200);
   });
 
   it('/review/delete/ (DELETE) with unexiting id', async () => {
     const id = new Types.ObjectId().toHexString();
-    const { statusCode, body } = await request(app.getHttpServer()).delete(
-      `/review/${id}/`,
-    );
+    const { statusCode, body } = await request(app.getHttpServer())
+      .delete(`/review/${id}/`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
     expect(body).toEqual({
@@ -90,8 +107,9 @@ describe('ReviewController (e2e)', () => {
     });
   });
 
-  afterAll(() => {
-    disconnect();
-    app.close();
+  afterAll(async () => {
+    await authService.removeUser(authDto.login);
+    await disconnect();
+    await app.close();
   });
 });
