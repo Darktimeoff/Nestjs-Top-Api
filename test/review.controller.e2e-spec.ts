@@ -40,6 +40,15 @@ describe('ReviewController (e2e)', () => {
     expect(createdId).toBeDefined();
   });
 
+  it('/review/create/ (POST) - fail', async () => {
+    const { statusCode, body } = await request(app.getHttpServer())
+      .post('/review/create/')
+      .send({ ...createDTO, rating: 0 });
+
+    expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(body.message.length).toBeGreaterThanOrEqual(1);
+  });
+
   it('/review/product/:id/ (GET)', async () => {
     const { statusCode, body } = await request(app.getHttpServer()).get(
       `/review/product/${productId}/`,

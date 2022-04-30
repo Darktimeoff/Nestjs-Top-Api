@@ -1,20 +1,20 @@
 import { IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class CreateReviewDto {
-  @IsString({ message: 'Не передано name' })
+  @IsString()
   name: string;
 
-  @IsString({ message: 'Не передано description' })
+  @IsString()
   description: string;
 
-  @IsString({ message: 'Не переданый title' })
+  @IsString()
   title: string;
 
-  @IsNumber(undefined, { message: 'Не переданный rating' })
-  @Min(1, { message: 'Минимальное значение 1' })
-  @Max(5, { message: 'Максимальное значение 5' })
+  @IsNumber()
+  @Min(1)
+  @Max(5)
   rating: number;
 
-  @IsNumber(undefined, { message: 'Не переданный rating' })
+  @IsString()
   productId: string;
 }
