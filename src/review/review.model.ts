@@ -16,7 +16,7 @@ export class ReviewModel {
   @Prop()
   rating: number;
 
-  @Prop()
+  @Prop({ type: Types.ObjectId })
   productId: Types.ObjectId;
 }
 

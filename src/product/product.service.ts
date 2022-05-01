@@ -47,7 +47,7 @@ export class ProductService {
         },
         {
           $lookup: {
-            from: 'Review',
+            from: 'reviews',
             localField: '_id',
             foreignField: 'productId',
             as: 'reviews',
