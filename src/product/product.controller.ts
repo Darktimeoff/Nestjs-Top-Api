@@ -4,28 +4,71 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductDto } from './dto/find-product.dto';
+import { PRODUCT_NOT_FOUND } from './product.contstants';
 import { ProductModel } from './product.model';
+import { ProductService } from './product.service';
 
 @Controller('product')
 export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
+  @UsePipes(new ValidationPipe())
   @Post('create')
-  async create(@Body() dto: Omit<ProductModel, '_id'>) {}
+  async create(@Body() dto: CreateProductDto) {
+    const product = await this.productService.create(dto);
+
+    return product;
+  }
 
   @Get(':id')
-  async get(@Param('id') id: string) {}
+  async get(@Param('id') id: string) {
+    const product = await this.productService.findById(id);
 
+    if (!product) {
+      throw new NotFoundException(PRODUCT_NOT_FOUND);
+    }
+
+    return product;
+  }
+
+  // @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string) {}
+  async delete(@Param('id') id: string) {
+    const product = await this.productService.deleteById(id);
+
+    if (!product) {
+      throw new NotFoundException(PRODUCT_NOT_FOUND);
+    }
+  }
 
   @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: ProductModel) {}
+  async patch(@Param('id') id: string, @Body() dto: Partial<ProductModel>) {
+    const product = await this.productService.updateById(id, dto);
 
+    if (!product) {
+      throw new NotFoundException(PRODUCT_NOT_FOUND);
+    }
+
+    return product;
+  }
+
+  @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Post()
-  async find(@Body() dto: FindProductDto) {}
+  @Post('find')
+  async find(@Body() dto: FindProductDto) {
+    const products = await this.productService.findWithReviews(dto);
+
+    return products;
+  }
 }
