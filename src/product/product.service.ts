@@ -61,7 +61,7 @@ export class ProductService {
         },
       ])
       .exec() as unknown as (ProductModel & {
-      review: ReviewModel[];
+      reviews: ReviewModel[];
       reviewCount: number;
       reviewAvg: number;
     })[];
