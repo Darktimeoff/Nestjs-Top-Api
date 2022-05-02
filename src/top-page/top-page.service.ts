@@ -29,12 +29,11 @@ export class TopPageService {
 
   async findByCategory(
     dto: FindTopPageDto,
-  ): Promise<Pick<
-    TopPageDocument,
-    'alias' | 'secondCategory' | 'title'
-  > | null> {
+  ): Promise<
+    Pick<TopPageDocument, 'alias' | 'secondCategory' | 'title'>[] | null
+  > {
     return this.topPageModel
-      .findOne(
+      .find(
         {
           firstLevelCategory: dto.firstCategory,
         },

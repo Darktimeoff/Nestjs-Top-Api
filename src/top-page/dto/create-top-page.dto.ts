@@ -11,7 +11,7 @@ import { TopLevelCategory } from '../top-page.model';
 
 export class HHDto {
   @IsNumber()
-  count1: number;
+  count: number;
 
   @IsNumber()
   juniorSalary: number;
@@ -33,7 +33,6 @@ export class AdvantageDto {
 
 export class CreateTopPageDto {
   @IsEnum(TopLevelCategory)
-  @IsString()
   firstLevelCategory: TopLevelCategory;
 
   @IsString()
