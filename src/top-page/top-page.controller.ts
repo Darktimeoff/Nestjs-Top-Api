@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { IdValidationPipe } from 'src/pipe/id-validation.pipe';
-import { CreateTopPageDto } from './dto/create-top-pate.dto';
+import { CreateTopPageDto } from './dto/create-top-page.dto';
 import { FindTopPageDto } from './dto/find-top-page.dto';
 import { TOP_PAGE_NOT_FOUND } from './top-page.contstants';
 import { TopPageModel } from './top-page.model';
