@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { TopLevelCategory } from '../top-page.model';
 
-export class HH {
+export class HHDto {
   @IsNumber()
   count1: number;
 
@@ -23,7 +23,7 @@ export class HH {
   seniorSalary: number;
 }
 
-export class Advantage {
+export class AdvantageDto {
   @IsString()
   title: string;
 
@@ -50,13 +50,13 @@ export class CreateTopPageDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => HH)
-  hh?: HH;
+  @Type(() => HHDto)
+  hh?: HHDto;
 
   @ValidateNested()
   @IsArray()
-  @Type(() => Advantage)
-  advantages: Advantage[];
+  @Type(() => AdvantageDto)
+  advantages: AdvantageDto[];
 
   @IsString()
   seoText: string;
