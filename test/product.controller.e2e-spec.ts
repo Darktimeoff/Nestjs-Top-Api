@@ -84,12 +84,21 @@ describe('ProductControllet /product (e2e)', () => {
   it('/create/ (POST)', async () => {
     const { statusCode, body } = await request(app.getHttpServer())
       .post('/product/create/')
-      .send(createProductDto);
+      .send(createProductDto)
+      .set('Authorization', `Bearer ${token}`);
 
     productId = body._id;
 
     expect(statusCode).toBe(HttpStatus.CREATED);
     expect(body._id).toBeTruthy();
+  });
+
+  it('/create/ (POST) - failed, unauthorized', async () => {
+    const { statusCode, body } = await request(app.getHttpServer())
+      .post('/product/create/')
+      .send(createProductDto);
+
+    expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
   });
 
   it('/create/ (POST) failed, with uncorrect format data', async () => {
@@ -100,25 +109,34 @@ describe('ProductControllet /product (e2e)', () => {
         image: 1231,
         price: undefined,
         description: undefined,
-      });
+      })
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(body.message.length).toBeGreaterThanOrEqual(1);
   });
 
   it('/:id (GET)', async () => {
-    const { statusCode, body } = await request(app.getHttpServer()).get(
-      `/product/${productId}/`,
-    );
+    const { statusCode, body } = await request(app.getHttpServer())
+      .get(`/product/${productId}/`)
+      .set('Authorization', `Bearer ${token}`);
 
-    expect(statusCode).toBe(200);
+    expect(statusCode).toBe(HttpStatus.OK);
     expect(body._id).toBe(productId);
   });
 
-  it('/:id (GET) - failed ucorrect format id', async () => {
-    const { statusCode, body } = await request(app.getHttpServer()).get(
-      `/product/${productId}1/`,
+  it('/:id (GET) - failed, unauthorized', async () => {
+    const { statusCode } = await request(app.getHttpServer()).get(
+      `/product/${productId}/`,
     );
+
+    expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('/:id (GET) - failed ucorrect format id', async () => {
+    const { statusCode, body } = await request(app.getHttpServer())
+      .get(`/product/${productId}1/`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(body.message).toBe(ID_VALIDATION_ERROR);
@@ -126,9 +144,9 @@ describe('ProductControllet /product (e2e)', () => {
 
   it('/:id (GET) - failed, not found', async () => {
     const id = new Types.ObjectId().toHexString();
-    const { statusCode, body } = await request(app.getHttpServer()).get(
-      `/product/${id}/`,
-    );
+    const { statusCode, body } = await request(app.getHttpServer())
+      .get(`/product/${id}/`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
     expect(body.message).toBe(PRODUCT_NOT_FOUND);
@@ -137,17 +155,26 @@ describe('ProductControllet /product (e2e)', () => {
   it('/:id (PATCH)', async () => {
     const { statusCode, body } = await request(app.getHttpServer())
       .patch(`/product/${productId}/`)
-      .send(patchProductDto);
+      .send(patchProductDto)
+      .set('Authorization', `Bearer ${token}`);
 
-    expect(statusCode).toBe(200);
+    expect(statusCode).toBe(HttpStatus.OK);
     expect(body._id).toBe(productId);
     expect(body.title).toBe(patchProductDto.title);
   });
 
-  it('/:id (PATCH) - failed ucorrect format id', async () => {
-    const { statusCode, body } = await request(app.getHttpServer()).patch(
-      `/product/${productId}1/`,
-    );
+  it('/:id (PATCH) - failed, unauthorized', async () => {
+    const { statusCode } = await request(app.getHttpServer())
+      .patch(`/product/${productId}/`)
+      .send(patchProductDto);
+
+    expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('/:id (PATCH) - failed uncorrect format id', async () => {
+    const { statusCode, body } = await request(app.getHttpServer())
+      .patch(`/product/${productId}1/`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
     expect(body.message).toBe(ID_VALIDATION_ERROR);
@@ -155,9 +182,9 @@ describe('ProductControllet /product (e2e)', () => {
 
   it('/:id (PATCH) - failed, not found', async () => {
     const id = new Types.ObjectId().toHexString();
-    const { statusCode, body } = await request(app.getHttpServer()).patch(
-      `/product/${id}/`,
-    );
+    const { statusCode, body } = await request(app.getHttpServer())
+      .patch(`/product/${id}/`)
+      .set('Authorization', `Bearer ${token}`);
 
     expect(statusCode).toBe(HttpStatus.NOT_FOUND);
     expect(body.message).toBe(PRODUCT_NOT_FOUND);
@@ -180,7 +207,8 @@ describe('ProductControllet /product (e2e)', () => {
       reviews: ReviewModel & { _id: string }[];
       reviewCount: number;
       reviewAvg: number;
-    } = pBody[0];
+      //@ts-ignore
+    } = pBody.find((p) => p._id == productId);
     const review = product.reviews[0];
 
     expect(statusCode).toBe(HttpStatus.OK);
