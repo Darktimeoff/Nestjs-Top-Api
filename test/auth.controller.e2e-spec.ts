@@ -12,7 +12,7 @@ import {
 } from './../src/auth/auth.constants';
 
 const authDto: AuthDto = {
-  login: 'test1@gmail.com',
+  login: 'test2@gmail.com',
   password: 'test',
 };
 
