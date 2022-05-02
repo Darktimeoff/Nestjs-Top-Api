@@ -7,6 +7,7 @@ import { AppModule } from './../src/app.module';
 import { REVIEW_NOT_FOUND } from './../src/review/review.constants';
 import { AuthDto } from './../src/auth/dto/auth.dto';
 import { AuthService } from './../src/auth/auth.service';
+import { ID_VALIDATION_ERROR } from './../src/pipe/id-validation.contstants';
 
 const productId = new Types.ObjectId().toHexString();
 
@@ -72,7 +73,16 @@ describe('ReviewController (e2e)', () => {
     );
 
     expect(statusCode).toBe(HttpStatus.OK);
-    expect(body.length).toBe(1);
+    expect(body.length).toBe(0);
+  });
+
+  it('/review/product/:id/ (GET) - failed, with uncorrect id format', async () => {
+    const { statusCode, body } = await request(app.getHttpServer()).get(
+      `/review/product/${productId}1/`,
+    );
+
+    expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(body.message).toBe(ID_VALIDATION_ERROR);
   });
 
   it('/review/product/:id/ (GET) with unexting id', async () => {
@@ -94,7 +104,15 @@ describe('ReviewController (e2e)', () => {
     expect(statusCode).toBe(200);
   });
 
-  it('/review/delete/ (DELETE) with unexiting id', async () => {
+  it('/review/delete/ (DELETE) - failed, witout authorization', async () => {
+    const { statusCode } = await request(app.getHttpServer()).delete(
+      `/review/${createdId}/`,
+    );
+
+    expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
+  });
+
+  it('/review/delete/ (DELETE) - failed, with unexiting id', async () => {
     const id = new Types.ObjectId().toHexString();
     const { statusCode, body } = await request(app.getHttpServer())
       .delete(`/review/${id}/`)
@@ -105,6 +123,15 @@ describe('ReviewController (e2e)', () => {
       statusCode: HttpStatus.NOT_FOUND,
       message: REVIEW_NOT_FOUND,
     });
+  });
+
+  it('/review/delete/ (DELETE) - failed, with uncorrect id format', async () => {
+    const { statusCode, body } = await request(app.getHttpServer())
+      .delete(`/review/${createdId}1/`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(statusCode).toBe(HttpStatus.BAD_REQUEST);
+    expect(body.message).toBe(ID_VALIDATION_ERROR);
   });
 
   afterAll(async () => {
