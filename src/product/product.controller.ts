@@ -12,7 +12,8 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { JwtAuthGuard } from './../auth/guards/jwt.guard';
+import { IdValidationPipe } from './../pipe/id-validation.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductDto } from './dto/find-product.dto';
 import { PRODUCT_NOT_FOUND } from './product.contstants';
@@ -32,7 +33,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
+  async get(@Param('id', IdValidationPipe) id: string) {
     const product = await this.productService.findById(id);
 
     if (!product) {
@@ -42,9 +43,9 @@ export class ProductController {
     return product;
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', IdValidationPipe) id: string) {
     const product = await this.productService.deleteById(id);
 
     if (!product) {
@@ -53,7 +54,10 @@ export class ProductController {
   }
 
   @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: Partial<ProductModel>) {
+  async patch(
+    @Param('id', IdValidationPipe) id: string,
+    @Body() dto: Partial<ProductModel>,
+  ) {
     const product = await this.productService.updateById(id, dto);
 
     if (!product) {
