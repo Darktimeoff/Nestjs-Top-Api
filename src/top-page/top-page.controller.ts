@@ -41,6 +41,17 @@ export class TopPageController {
     return topPage;
   }
 
+  @Get('byAlias/:alias')
+  async getByAlias(@Param('alias') alias: string) {
+    const topPage = await this.topPageService.findByAlias(alias);
+
+    if (!topPage) {
+      throw new NotFoundException(TOP_PAGE_NOT_FOUND);
+    }
+
+    return topPage;
+  }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(@Param('id', IdValidationPipe) id: string) {
@@ -54,7 +65,7 @@ export class TopPageController {
   @Patch(':id')
   async patch(
     @Param('id', IdValidationPipe) id: string,
-    @Body() dto: Partial<TopPageModel>,
+    @Body() dto: Partial<CreateTopPageDto>,
   ) {
     const topPage = await this.topPageService.updateById(id, dto);
 
@@ -69,12 +80,6 @@ export class TopPageController {
   @HttpCode(200)
   @Post('find')
   async find(@Body() dto: FindTopPageDto) {
-    const topPage = await this.topPageService.findByCategory(dto);
-
-    if (!topPage) {
-      throw new NotFoundException(TOP_PAGE_NOT_FOUND);
-    }
-
-    return topPage;
+    return this.topPageService.findByCategory(dto);
   }
 }
