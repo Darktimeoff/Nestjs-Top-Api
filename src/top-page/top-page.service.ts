@@ -33,12 +33,18 @@ export class TopPageService {
     Pick<TopPageDocument, 'alias' | 'secondCategory' | 'title'>[] | null
   > {
     return this.topPageModel
-      .find(
-        {
-          firstLevelCategory: dto.firstCategory,
+      .aggregate()
+      .match({
+        firstLevelCategory: dto.firstCategory,
+      })
+      .group({
+        _id: {
+          secondCategory: '$secondCategory',
         },
-        { alias: 1, secondCategory: 1, title: 1 },
-      )
+        pages: {
+          $push: { alias: '$alias', title: '$title' },
+        },
+      })
       .exec();
   }
 
