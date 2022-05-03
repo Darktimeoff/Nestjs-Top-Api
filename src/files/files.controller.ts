@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   HttpCode,
   Post,
@@ -9,7 +10,9 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { FileElementReponse } from './dto/file-element.response';
+import { FILES_NOT_IMAGE } from './files.constants';
 import { FilesService } from './files.service';
+import { MFile } from './mfile.class';
 
 @Controller('files')
 export class FilesController {
@@ -22,6 +25,10 @@ export class FilesController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
   ): Promise<FileElementReponse[]> {
-    return this.fileService.saveFiles([file]);
+    if (!file.mimetype.includes('image')) {
+      throw new BadRequestException(FILES_NOT_IMAGE);
+    }
+
+    return this.fileService.saveWithWebpFormat(file);
   }
 }
