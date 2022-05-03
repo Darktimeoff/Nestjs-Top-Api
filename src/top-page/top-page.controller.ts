@@ -23,7 +23,7 @@ import { TopPageService } from './top-page.service';
 export class TopPageController {
   constructor(private readonly topPageService: TopPageService) {}
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   @Post('create')
   async create(@Body() dto: CreateTopPageDto) {
