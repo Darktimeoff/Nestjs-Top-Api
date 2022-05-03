@@ -219,14 +219,14 @@ describe('TopPageController /top-page (e2e)', () => {
 
   it('/textSearch/:text (GET)', async () => {
     const { statusCode, body } = await request(app.getHttpServer()).get(
-      `/top-page/textSearch/${createTopPageDto.seoText}/`,
+      `/top-page/textSearch/${createTopPageDto.alias}/`,
     );
 
     //@ts-ignore
     const page = body.find((p) => p._id === pageId);
 
     expect(statusCode).toBe(HttpStatus.OK);
-    expect(page.seoText).toBe(createTopPageDto.seoText);
+    expect(page.alias).toBe(createTopPageDto.alias);
   });
 
   it('/textSearch/:text (GET) - success, empty result', async () => {
