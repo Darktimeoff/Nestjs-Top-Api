@@ -217,6 +217,27 @@ describe('TopPageController /top-page (e2e)', () => {
     expect(body.message).toBe(TOP_PAGE_NOT_FOUND);
   });
 
+  it('/textSearch/:text (GET)', async () => {
+    const { statusCode, body } = await request(app.getHttpServer()).get(
+      `/top-page/textSearch/${createTopPageDto.seoText}/`,
+    );
+
+    //@ts-ignore
+    const page = body.find((p) => p._id === pageId);
+
+    expect(statusCode).toBe(HttpStatus.OK);
+    expect(page.seoText).toBe(createTopPageDto.seoText);
+  });
+
+  it('/textSearch/:text (GET) - success, empty result', async () => {
+    const { statusCode, body } = await request(app.getHttpServer()).get(
+      `/top-page/textSearch/asdasdasdasdasdasd/`,
+    );
+
+    expect(statusCode).toBe(HttpStatus.OK);
+    expect(body.length).toBe(0);
+  });
+
   it('/:id (DELETE)', async () => {
     const { statusCode } = await request(app.getHttpServer())
       .delete(`/top-page/${pageId}/`)
