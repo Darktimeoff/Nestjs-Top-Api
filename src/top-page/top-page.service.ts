@@ -19,6 +19,10 @@ export class TopPageService {
     return this.topPageModel.findById(id).exec();
   }
 
+  async findAll(): Promise<TopPageDocument[] | null> {
+    return this.topPageModel.find({}).exec();
+  }
+
   async updateById(id: string, dto: Partial<CreateTopPageDto>) {
     return this.topPageModel.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
