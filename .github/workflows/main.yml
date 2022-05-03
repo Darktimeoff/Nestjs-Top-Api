@@ -15,4 +15,5 @@ jobs:
           name: docker.pkg.github.com/Darktimeoff/Nestjs-Top-Api/top-api
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           tags: "develop"
