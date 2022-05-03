@@ -10,11 +10,8 @@ jobs:
       - uses: actions/checkout@master
       - name: Publish to registry
         uses: elgohr/Publish-Docker-Github-Action@v4
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
+          registry: docker.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
           name: docker.pkg.github.com/Darktimeoff/Nestjs-Top-Api/top-api
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
