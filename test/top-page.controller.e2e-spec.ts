@@ -182,11 +182,16 @@ describe('TopPageController /top-page (e2e)', () => {
       .send(findTopPageDto);
 
     //@ts-ignore
-    const page = body.find((p) => p._id == pageId);
+    const page = body.find(
+      (p) => p._id.secondCategory == createTopPageDto.secondCategory,
+    );
 
     expect(statusCode).toBe(HttpStatus.OK);
     expect(page).toBeDefined();
-    expect(page.alias).toBe(createTopPageDto.alias);
+    expect(page.pages).toContainEqual({
+      alias: createTopPageDto.alias,
+      title: updateTopPageDto.title,
+    });
   });
 
   it('/find (POST) - failed, unvalid body', async () => {
