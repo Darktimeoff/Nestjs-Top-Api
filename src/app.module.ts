@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { getMongoConfig } from './config/mongo.config';
 import { FilesModule } from './files/files.module';
 import { SitemapModule } from './sitemap/sitemap.module';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SitemapModule } from './sitemap/sitemap.module';
     ReviewModule,
     FilesModule,
     SitemapModule,
+    TelegramModule,
   ],
 })
 export class AppModule {}
