@@ -19,7 +19,7 @@ export class SitemapController {
   @Get('xml')
   @Header('content-type', 'text/xml')
   async sitemap() {
-    const formatString = 'yyyy-MM-dd\'T\'HH:mm:00.000xxx';
+    const formatString = "yyyy-MM-dd'T'HH:mm:00.000xxx";
 
     let res = [
       {
