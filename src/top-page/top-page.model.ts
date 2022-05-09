@@ -26,6 +26,9 @@ export class HH {
 
   @Prop()
   seniorSalary: number;
+
+  @Prop()
+  updatedAt: Date;
 }
 
 export class Advantage {

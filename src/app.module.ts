@@ -10,6 +10,7 @@ import { FilesModule } from './files/files.module';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { getTelegramConfig } from './config/telegram.config';
+import { HhModule } from './hh/hh.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { getTelegramConfig } from './config/telegram.config';
       useFactory: getTelegramConfig,
       inject: [ConfigService],
     }),
+    HhModule,
   ],
 })
 export class AppModule {}
