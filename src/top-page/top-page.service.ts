@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { addDays } from 'date-fns';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateTopPageDto } from './dto/create-top-page.dto';
 import { FindTopPageDto } from './dto/find-top-page.dto';
 import { TopLevelCategory, TopPageDocument } from './top-page.model';
@@ -16,7 +16,7 @@ export class TopPageService {
     return this.topPageModel.create(dto);
   }
 
-  async findById(id: string): Promise<TopPageDocument | null> {
+  async findById(id: string | Types.ObjectId): Promise<TopPageDocument | null> {
     return this.topPageModel.findById(id).exec();
   }
 
@@ -28,18 +28,32 @@ export class TopPageService {
     return this.topPageModel
       .find({
         firstLevelCategory: TopLevelCategory.Courses,
-        'hh.updatedAt': {
-          $lt: addDays(date, -1),
-        },
+        $or: [
+          {
+            'hh.updatedAt': {
+              $lt: addDays(date, -1),
+            },
+          },
+          {
+            'hh.updatedAt': {
+              $exists: false,
+            },
+          },
+        ],
       })
       .exec();
   }
 
-  async updateById(id: string, dto: Partial<CreateTopPageDto>) {
+  async updateById(
+    id: string | Types.ObjectId,
+    dto: Partial<CreateTopPageDto>,
+  ) {
     return this.topPageModel.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
 
-  async deleteById(id: string): Promise<TopPageDocument | null> {
+  async deleteById(
+    id: string | Types.ObjectId,
+  ): Promise<TopPageDocument | null> {
     return this.topPageModel.findByIdAndDelete(id).exec();
   }
 
